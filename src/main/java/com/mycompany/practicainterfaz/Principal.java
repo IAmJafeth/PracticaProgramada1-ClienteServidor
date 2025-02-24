@@ -367,6 +367,7 @@ public class Principal extends javax.swing.JFrame {
         
         if(JOptionPane.showConfirmDialog(null, "Desea borrar el siguiente producto?\n\n" + productoAEliminar.toString()) == 0){
             productos.remove(productoAEliminar);
+            borrarProductoTabla(codigoAEliminar);
             JOptionPane.showMessageDialog(null, "Producto Eliminado con Éxito");
             limpiar();
             return;
@@ -420,6 +421,15 @@ public class Principal extends javax.swing.JFrame {
         chkDisponible.setSelected(true);
     }
     
+     private void borrarProductoTabla(int codigo){
+         for (int i = 0; i < modeloTabla.getRowCount(); i++) {
+            if (modeloTabla.getValueAt(i, 0).equals(codigo)) {
+                modeloTabla.removeRow(i);
+                break; 
+            }
+        }
+     }
+     
      private Producto buscarProductoCodigo(int codigo){
          for(Producto producto : productos){
              if (producto.getCodigo() == codigo){
