@@ -162,6 +162,11 @@ public class Principal extends javax.swing.JFrame {
         btnEditar.setFont(new java.awt.Font("Sylfaen", 0, 15)); // NOI18N
         btnEditar.setText("Editar");
         btnEditar.setAlignmentY(0.0F);
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnLimpiar.setFont(new java.awt.Font("Sylfaen", 0, 15)); // NOI18N
         btnLimpiar.setText("Limpiar");
@@ -297,9 +302,9 @@ public class Principal extends javax.swing.JFrame {
         int codigo = (int) spiCodigo.getValue();
         String nombre = txtNombre.getText();
         
-        float precio;
+        double precio;
         try{
-            precio = Float.parseFloat(txtPrecio.getText());
+            precio = Double.parseDouble(txtPrecio.getText());
         }catch(NumberFormatException e){
             JOptionPane.showMessageDialog(null, "Precio Inválido, vuelvalo a intentar");
             txtPrecio.setText("0");
@@ -320,12 +325,14 @@ public class Principal extends javax.swing.JFrame {
         }
         
         Producto producto = new Producto(codigo, nombre, precio, disponibilidad, cantidad, categoria);
-        productos.add(producto);
-        
-        System.out.println(producto.toString());
-        System.out.println(productos.toString());
-        
-        System.out.println(Categoria.Hogar.toString());
+        Producto antiguoProducto = buscarProductoCodigo(codigo);
+        if(antiguoProducto != null){
+            borrarProductoTabla(codigo);
+            productos.set(productos.indexOf(antiguoProducto), producto);
+        } else{
+            productos.add(producto);
+            codigoCounter++;
+        }
         
         String strDisponible;
         
@@ -338,7 +345,7 @@ public class Principal extends javax.swing.JFrame {
 
         modeloTabla.addRow(new Object[]{codigo, nombre, categoria.toString(),precio,strDisponible, cantidad});
         
-        codigoCounter++;
+        
         limpiar();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
@@ -376,6 +383,41 @@ public class Principal extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "Eliminación Abortada: El Producto NO se eliminó"); 
         
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        // TODO add your handling code here:
+        int codigoAModificar;
+        while (true) {            
+            try{
+                codigoAModificar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el Código del Producto a Modificar"));
+                break;
+            }
+            catch(NumberFormatException e){
+                JOptionPane.showMessageDialog(null,"Código invalido, porfavor ingresar unicamente el código del producto");
+            } 
+        }
+        
+        Producto productoAModificar = buscarProductoCodigo(codigoAModificar);
+        
+        if(productoAModificar == null){
+            JOptionPane.showMessageDialog(null, "El Producto con codigo " + codigoAModificar + " no pudo ser encontrado");
+            return;
+        }
+        
+        spiCodigo.setValue(productoAModificar.getCodigo());
+        txtNombre.setText(productoAModificar.getNombre());
+        txtPrecio.setText(String.valueOf(productoAModificar.getPrecio()));
+        spiInventario.setValue(productoAModificar.getCantidadInv());
+        chkDisponible.setSelected(productoAModificar.isDisponibilidad());
+        
+        if (productoAModificar.getCategoria() == Categoria.Hogar){
+            rbtnHogar.setSelected(true);
+        }else if(productoAModificar.getCategoria() == Categoria.Juguetes){
+            rbtnJuguetes.setSelected(true);
+        }else{
+            rbtnOficina.setSelected(true);
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments

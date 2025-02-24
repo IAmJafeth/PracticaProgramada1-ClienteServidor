@@ -344,6 +344,9 @@
                 <Property name="text" type="java.lang.String" value="Editar"/>
                 <Property name="alignmentY" type="float" value="0.0"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEditarActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnLimpiar">
               <Properties>
