@@ -17,7 +17,7 @@ public class Producto {
         this.cantidadInv = cantidadInv;
         this.categoria = categoria;
     }
- 
+            
     public int getCodigo() {
         return codigo;
     }
@@ -65,5 +65,14 @@ public class Producto {
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
- 
+    
+    @Override
+    public String toString() {
+        return "Producto: " + nombre + "\n" +
+               "  Código: " + codigo + "\n" +
+               "  Precio: $" + precio + "\n" +
+               "  Disponibilidad: " + (disponibilidad ? "Sí" : "No") + "\n" +
+               "  Cantidad en Inventario: " + cantidadInv + "\n" +
+               "  Categoría: " + categoria.toString();
+    }
 }

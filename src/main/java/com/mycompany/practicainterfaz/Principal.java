@@ -1,6 +1,7 @@
 package com.mycompany.practicainterfaz;
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Principal extends javax.swing.JFrame {
@@ -152,6 +153,11 @@ public class Principal extends javax.swing.JFrame {
         btnEliminar.setFont(new java.awt.Font("Sylfaen", 0, 15)); // NOI18N
         btnEliminar.setText("Eliminar");
         btnEliminar.setAlignmentY(0.0F);
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         btnEditar.setFont(new java.awt.Font("Sylfaen", 0, 15)); // NOI18N
         btnEditar.setText("Editar");
@@ -290,7 +296,16 @@ public class Principal extends javax.swing.JFrame {
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         int codigo = (int) spiCodigo.getValue();
         String nombre = txtNombre.getText();
-        float precio = Float.parseFloat(txtPrecio.getText());
+        
+        float precio;
+        try{
+            precio = Float.parseFloat(txtPrecio.getText());
+        }catch(NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Precio Inválido, vuelvalo a intentar");
+            txtPrecio.setText("0");
+            return;
+        }
+        
         boolean disponibilidad = chkDisponible.isSelected();
         int cantidad = (int) spiInventario.getValue();
         
@@ -307,6 +322,9 @@ public class Principal extends javax.swing.JFrame {
         Producto producto = new Producto(codigo, nombre, precio, disponibilidad, cantidad, categoria);
         productos.add(producto);
         
+        System.out.println(producto.toString());
+        System.out.println(productos.toString());
+        
         System.out.println(Categoria.Hogar.toString());
         
         String strDisponible;
@@ -317,14 +335,46 @@ public class Principal extends javax.swing.JFrame {
             strDisponible = "No Disponible";
         }
         
+
         modeloTabla.addRow(new Object[]{codigo, nombre, categoria.toString(),precio,strDisponible, cantidad});
         
+        codigoCounter++;
         limpiar();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         limpiar();
     }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        int codigoAEliminar;
+        while (true) {            
+            try{
+                codigoAEliminar = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el Código del Producto a elliminar"));
+                break;
+            }
+            catch(NumberFormatException e){
+                JOptionPane.showMessageDialog(null,"Código invalido, porfavor ingresar unicamente el código del producto");
+            } 
+        }
+        
+        Producto productoAEliminar = buscarProductoCodigo(codigoAEliminar);
+        
+        if(productoAEliminar == null){
+            JOptionPane.showMessageDialog(null, "El Producto con codigo " + codigoAEliminar + " no pudo ser encontrado");
+            return;
+        }
+        
+        if(JOptionPane.showConfirmDialog(null, "Desea borrar el siguiente producto?\n\n" + productoAEliminar.toString()) == 0){
+            productos.remove(productoAEliminar);
+            JOptionPane.showMessageDialog(null, "Producto Eliminado con Éxito");
+            limpiar();
+            return;
+        } 
+        
+        JOptionPane.showMessageDialog(null, "Eliminación Abortada: El Producto NO se eliminó"); 
+        
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -362,15 +412,27 @@ public class Principal extends javax.swing.JFrame {
     }
     
      private void limpiar(){
-        spiCodigo.setValue(0);
+        spiCodigo.setValue(codigoCounter);
         txtNombre.setText("");
-        txtPrecio.setText("");
+        txtPrecio.setText("0");
         spiInventario.setValue(0);
         rbtnHogar.setSelected(true);
         chkDisponible.setSelected(true);
     }
-
+    
+     private Producto buscarProductoCodigo(int codigo){
+         for(Producto producto : productos){
+             if (producto.getCodigo() == codigo){
+                 return producto;
+             }
+         }
+         return null;
+     }
      
+     
+    
+
+    int codigoCounter = 001;
     DefaultTableModel modeloTabla = new DefaultTableModel();
     ArrayList<Producto> productos = new ArrayList<>();
     

@@ -332,6 +332,9 @@
                 <Property name="text" type="java.lang.String" value="Eliminar"/>
                 <Property name="alignmentY" type="float" value="0.0"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEliminarActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnEditar">
               <Properties>
